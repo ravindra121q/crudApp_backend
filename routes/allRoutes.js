@@ -74,12 +74,13 @@ router.get("/user/product", (req, res) => {
   });
 });
 
-router.put("/user/product/update/:name", (req, res) => {
+router.put("/user/product/update/:id", (req, res) => {
   const token = req.header.authorization?.split(" ")[1];
+  const id = req.params.id;
   jwt.verify(token, `${process.env.secretKey}`, async (err, decoded) => {
     if (decoded) {
       const { name, brand, price, category } = req.body;
-      const product = await ProductModel.findOne({ name });
+      const product = await ProductModel.findOne({ _id: id });
       if (product.user_id == decoded.id) {
         await ProductModel.findByIdAndUpdate(product._id, {
           name,
