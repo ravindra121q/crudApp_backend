@@ -1,5 +1,5 @@
 const express = require("express");
-const { default: connection } = require("./Database/productDatabase");
+const { connection } = require("./Database/productDatabase");
 const { router } = require("./routes/allRoutes");
 const cors = require("cors");
 
