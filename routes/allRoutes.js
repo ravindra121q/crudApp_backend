@@ -69,9 +69,11 @@ router.delete("/user/product/:name", (req, res) => {
           res.json({ msg: "Product Deleted", status: true });
         } else {
           res.json({ msg: "Product not found", status: false });
+          return
         }
       } else {
         res.json({ msg: "Product not found", status: false });
+        return
       }
     }
   });
