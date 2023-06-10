@@ -20,11 +20,16 @@ router.post("/user/login", auth, async (req, res) => {
 
 router.post("/add/user", async (req, res) => {
   const { name, email, password } = req.body;
+  const user_exits = await UserModel.findOne({ email });
+  if (user_exits) {
+    res.json({ msg: "User already exists", status: false });
+    return;
+  }
   bcrypt.hash(password, 4, async (err, hash) => {
     console.log(hash);
     const user = new UserModel({ name, email, password: hash });
     await user.save();
-    res.json({ msg: "New user Added" });
+    res.json({ msg: "New user Added", status: true });
   });
 });
 
@@ -91,9 +96,9 @@ router.patch("/user/product/update/:id", async (req, res) => {
           price,
           category,
         });
-        res.json({ msg: "Product Updated" });
+        res.json({ msg: "Product Updated", update: true });
       } else {
-        res.json({ msg: "Product not found" });
+        res.json({ msg: "Product not found", update: false });
       }
     } else {
       res.status(401).json({ msg: "Token verification failed" });
@@ -102,6 +107,5 @@ router.patch("/user/product/update/:id", async (req, res) => {
     res.status(401).json({ msg: "Token verification failed" });
   }
 });
-
 
 module.exports = { router };
