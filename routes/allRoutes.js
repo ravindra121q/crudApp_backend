@@ -65,27 +65,31 @@ router.delete("/user/product/:name", (req, res) => {
 router.get("/user/product", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   jwt.verify(token, `${process.env.secretKey}`, async (err, decoded) => {
-    if(decoded){
-      if(decoded){
-        const product=await ProductModel.find({user_id:decoded.id})
-        res.json({msg:product})
+    if (decoded) {
+      if (decoded) {
+        const product = await ProductModel.find({ user_id: decoded.id });
+        res.json({ msg: product });
       }
     }
   });
 });
 
-
-router.patch("/user/product/update",(req,res)=>{
-  const token=req.header.authorization?.split(" ")[1];
-  jwt.verify(token,`${process.env.secretKey}`,async(err,decoded)=>{
-    if(decoded){
-      const {name,brand,price,category}=req.body;
-      const product=await ProductModel.findOne({name})
-      if(product.user_id==decoded.id){
-        await ProductModel.findByIdAndUpdate(product._id,{name,brand,price,category})
-        res.json({msg:"Product Updated"})
+router.put("/user/product/update/:name", (req, res) => {
+  const token = req.header.authorization?.split(" ")[1];
+  jwt.verify(token, `${process.env.secretKey}`, async (err, decoded) => {
+    if (decoded) {
+      const { name, brand, price, category } = req.body;
+      const product = await ProductModel.findOne({ name });
+      if (product.user_id == decoded.id) {
+        await ProductModel.findByIdAndUpdate(product._id, {
+          name,
+          brand,
+          price,
+          category,
+        });
+        res.json({ msg: "Product Updated" });
       }
     }
-  })
-})
+  });
+});
 module.exports = { router };
