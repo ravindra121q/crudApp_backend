@@ -74,14 +74,17 @@ router.get("/user/product", (req, res) => {
   });
 });
 
-router.patch("/user/product/update/:id", (req, res) => {
-  const token = req.header.authorization?.split(" ")[1];
+router.patch("/user/product/update/:id", async (req, res) => {
+  const token = req.header("authorization")?.split(" ")[1];
   const id = req.params.id;
-  jwt.verify(token, `${process.env.secretKey}`, async (err, decoded) => {
+  try {
+    const decoded = jwt.verify(token, process.env.secretKey);
     if (decoded) {
       const { name, brand, price, category } = req.body;
       const product = await ProductModel.findOne({ _id: id });
-      if (product.user_id == decoded.id) {
+      console.log(product.user_id);
+      // console.log(product.userId.toString())
+      if (product && product.user_id == decoded.id) {
         await ProductModel.findByIdAndUpdate(product._id, {
           name,
           brand,
@@ -89,8 +92,16 @@ router.patch("/user/product/update/:id", (req, res) => {
           category,
         });
         res.json({ msg: "Product Updated" });
+      } else {
+        res.json({ msg: "Product not found" });
       }
+    } else {
+      res.status(401).json({ msg: "Token verification failed" });
     }
-  });
+  } catch (err) {
+    res.status(401).json({ msg: "Token verification failed" });
+  }
 });
+
+
 module.exports = { router };
