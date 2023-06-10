@@ -65,7 +65,9 @@ router.delete("/user/product/:name", (req, res) => {
       // console.log( product);
       if (product.user_id == decoded.id) {
         await ProductModel.findByIdAndDelete(product._id);
-        res.json({ msg: "Product Deleted", product: product });
+        res.json({ msg: "Product Deleted", status: true });
+      } else {
+        res.json({ msg: "Product not found", status: false });
       }
     }
   });
