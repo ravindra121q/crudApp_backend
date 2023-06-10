@@ -62,10 +62,14 @@ router.delete("/user/product/:name", (req, res) => {
   jwt.verify(token, `${process.env.secretKey}`, async (err, decoded) => {
     if (decoded) {
       const product = await ProductModel.findOne({ name });
-      // console.log( product);
-      if (product.user_id == decoded.id) {
-        await ProductModel.findByIdAndDelete(product._id);
-        res.json({ msg: "Product Deleted", status: true });
+      console.log(product);
+      if (product) {
+        if (product.user_id == decoded.id) {
+          await ProductModel.findByIdAndDelete(product._id);
+          res.json({ msg: "Product Deleted", status: true });
+        } else {
+          res.json({ msg: "Product not found", status: false });
+        }
       } else {
         res.json({ msg: "Product not found", status: false });
       }
