@@ -12,10 +12,14 @@ const router = express.Router();
 router.post("/user/login", auth, async (req, res) => {
   const { email } = req.body;
   const user = await UserModel.findOne({ email });
-  const token = jwt.sign({ id: user._id }, `${process.env.secretKey}`, {
-    expiresIn: "7d",
-  });
-  res.json({ msg: "Successfully Logged in", token: token });
+  if (user) {
+    const token = jwt.sign({ id: user._id }, `${process.env.secretKey}`, {
+      expiresIn: "7d",
+    });
+    res.json({ msg: "Successfully Logged in", token: token });
+  } else {
+    res.json({ msg: "Invalid Credentials" });
+  }
 });
 
 router.post("/add/user", async (req, res) => {
