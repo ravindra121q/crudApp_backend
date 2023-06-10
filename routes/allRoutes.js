@@ -74,7 +74,7 @@ router.get("/user/product", (req, res) => {
   });
 });
 
-router.put("/user/product/update/:id", (req, res) => {
+router.patch("/user/product/update/:id", (req, res) => {
   const token = req.header.authorization?.split(" ")[1];
   const id = req.params.id;
   jwt.verify(token, `${process.env.secretKey}`, async (err, decoded) => {
